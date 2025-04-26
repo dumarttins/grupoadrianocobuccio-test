@@ -82,7 +82,9 @@ class WalletService
 
         return DB::transaction(function () use ($sender, $receiver, $amount, $description) {
             // Gerar código de transação único
-            $transactionCode = $this->generateTransactionCode();
+            $transferCodeBase = $this->generateTransactionCode();
+            $outTransactionCode = $transferCodeBase . '-out';
+            $inTransactionCode = $transferCodeBase . '-in';
             
             // Atualizar saldo do remetente
             $senderPreviousBalance = $sender->balance;
@@ -98,7 +100,7 @@ class WalletService
                 'previous_balance' => $senderPreviousBalance,
                 'new_balance' => $senderNewBalance,
                 'description' => $description ?? 'Transferência enviada',
-                'transaction_code' => $transactionCode,
+                'transaction_code' => $outTransactionCode, // Código único para saída
                 'sender_id' => $sender->id,
                 'receiver_id' => $receiver->id,
             ]);
@@ -117,7 +119,7 @@ class WalletService
                 'previous_balance' => $receiverPreviousBalance,
                 'new_balance' => $receiverNewBalance,
                 'description' => $description ?? 'Transferência recebida',
-                'transaction_code' => $transactionCode,
+                'transaction_code' => $inTransactionCode, // Código único para entrada
                 'sender_id' => $sender->id,
                 'receiver_id' => $receiver->id,
                 'related_transaction_id' => $outTransaction->id,

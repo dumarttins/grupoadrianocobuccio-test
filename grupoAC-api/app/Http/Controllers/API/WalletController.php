@@ -62,6 +62,55 @@ class WalletController extends Controller
             ], 422);
         }
 
+        $wallet = $request->user()->wallet;
+
+        if (!$wallet) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Carteira não encontrada',
+            ], 404);
+        }
+
+        try {
+            $transaction = $this->walletService->deposit(
+                $wallet, 
+                $request->amount, 
+                $request->description
+            );
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Depósito realizado com sucesso',
+                'transaction' => $transaction,
+                'new_balance' => $wallet->fresh()->balance,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Erro ao processar depósito: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Transferir para outra carteira
+     */
+    public function transfer(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'receiver_account' => 'required|string|exists:wallets,account_number',
+            'amount' => 'required|numeric|min:0.01',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Dados de validação inválidos',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         $sender = $request->user()->wallet;
 
         if (!$sender) {
@@ -192,53 +241,4 @@ class WalletController extends Controller
             ], 500);
         }
     }
-}válidos',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $wallet = $request->user()->wallet;
-
-        if (!$wallet) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Carteira não encontrada',
-            ], 404);
-        }
-
-        try {
-            $transaction = $this->walletService->deposit(
-                $wallet, 
-                $request->amount, 
-                $request->description
-            );
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Depósito realizado com sucesso',
-                'transaction' => $transaction,
-                'new_balance' => $wallet->fresh()->balance,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Erro ao processar depósito: ' . $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    /**
-     * Transferir para outra carteira
-     */
-    public function transfer(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'receiver_account' => 'required|string|exists:wallets,account_number',
-            'amount' => 'required|numeric|min:0.01',
-            'description' => 'nullable|string|max:255',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Dados de validação in
+}

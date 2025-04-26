@@ -12,6 +12,12 @@ class RateLimitMiddleware
 {
     /**
      * Limita requisições por IP
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @param  int  $maxAttempts
+     * @param  int  $decayMinutes
+     * @return mixed
      */
     public function handle(Request $request, Closure $next, $maxAttempts = 60, $decayMinutes = 1): Response
     {

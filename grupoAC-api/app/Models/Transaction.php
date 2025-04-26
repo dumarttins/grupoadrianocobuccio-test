@@ -10,6 +10,11 @@ class Transaction extends Model
 {
     use HasFactory, SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'wallet_id',
         'type',
@@ -23,26 +28,41 @@ class Transaction extends Model
         'receiver_id',
     ];
 
+    /**
+     * Get the wallet that owns the transaction.
+     */
     public function wallet()
     {
         return $this->belongsTo(Wallet::class);
     }
 
+    /**
+     * Get the related transaction.
+     */
     public function relatedTransaction()
     {
         return $this->belongsTo(Transaction::class, 'related_transaction_id');
     }
 
+    /**
+     * Get the reversals for the transaction.
+     */
     public function reversals()
     {
         return $this->hasMany(Transaction::class, 'related_transaction_id');
     }
 
+    /**
+     * Get the sender wallet.
+     */
     public function sender()
     {
         return $this->belongsTo(Wallet::class, 'sender_id');
     }
 
+    /**
+     * Get the receiver wallet.
+     */
     public function receiver()
     {
         return $this->belongsTo(Wallet::class, 'receiver_id');
