@@ -1,21 +1,35 @@
 # Carteira Financeira - Desafio Full Stack
 
-Este projeto consiste em uma API para um sistema de carteira financeira, onde os usuários podem realizar transferências e depósitos de dinheiro, com suporte para reversão de operações.
+Este projeto consiste em um sistema de carteira financeira, com backend em Laravel e frontend em React, onde os usuários podem realizar transferências de saldo e depósitos.
+
+## Estrutura do Projeto
+
+O projeto está dividido em duas partes principais:
+
+- **grupoAC-api/** - API RESTful em Laravel
+- **grupoac-frontend/** - Interface de usuário em React
 
 ## Tecnologias Utilizadas
 
-- **PHP 8.2** - Linguagem de programação
-- **Laravel 10** - Framework PHP
-- **MySQL 8.0** - Banco de dados relacional
-- **Docker** - Containerização
-- **Nginx** - Servidor web
-- **Laravel Sanctum** - Autenticação API
+### Backend
+- PHP 8.2
+- Laravel 10
+- MySQL 8.0
+- Docker e Docker Compose
+
+### Frontend
+- React 18
+- React Router 6
+- Axios
+- Chart.js
+- Tailwind CSS
 
 ## Requisitos do Sistema
 
-- Docker e Docker Compose instalados
+- Docker e Docker Compose (para backend)
+- Node.js 16+ (para frontend)
+- npm ou yarn
 - Git
-- Portas 8000 (web) e 3306 (MySQL) disponíveis
 
 ## Instalação e Configuração
 
@@ -26,123 +40,136 @@ git clone https://github.com/seu-usuario/carteira-financeira.git
 cd carteira-financeira
 ```
 
-### 2. Configuração do Ambiente
-
-Copie o arquivo de exemplo de ambiente:
+### 2. Configuração do Backend (Docker)
 
 ```bash
+# Configurar arquivo .env
+cd grupoAC-api
 cp .env.example .env
 ```
 
-Configure o arquivo `.env` com suas credenciais de banco de dados:
+Edite o arquivo `.env` com suas credenciais de banco de dados:
 
 ```
 DB_DATABASE=carteira
 DB_USERNAME=carteira_user
-DB_PASSWORD=seu_password_seguro
-DB_ROOT_PASSWORD=seu_root_password_seguro
+DB_PASSWORD=sua_senha_segura
+DB_ROOT_PASSWORD=sua_senha_root_segura
 ```
 
-### 3. Instalar Dependências
-
-```bash
-docker run --rm -v $(pwd):/var/www composer install
-```
-
-### 4. Iniciar Containers Docker
+Iniciar os containers Docker:
 
 ```bash
 docker-compose up -d
 ```
 
-### 5. Gerar Chave da Aplicação
-
-```bash
-docker exec carteira-app php artisan key:generate
-```
-
-### 6. Executar Migrações
+Executar migrações:
 
 ```bash
 docker exec carteira-app php artisan migrate --seed
 ```
 
-## Estrutura do Projeto
-
-O projeto segue a arquitetura MVC do Laravel com a adição de uma camada de serviço:
-
-- **`app/Models`**: Modelos de domínio (User, Wallet, Transaction)
-- **`app/Http/Controllers/API`**: Controllers para API
-- **`app/Services`**: Camada de serviços (lógica de negócios)
-- **`app/Http/Requests`**: Classes de validação de requisições
-- **`app/Http/Resources`**: Transformadores de resposta
-- **`app/Http/Middleware`**: Middlewares personalizados
-- **`database/migrations`**: Migrações do banco de dados
-- **`tests`**: Testes unitários e de integração
-- **`docker`**: Configurações de containers
-
-## Funcionalidades Implementadas
-
-1. **Autenticação**
-   - Registro de usuários
-   - Login/Logout
-   - Autenticação via tokens
-
-2. **Carteira Financeira**
-   - Visualização de saldo
-   - Depósito de valores
-   - Transferências entre carteiras
-   - Listagem de transações
-   - Reversão de operações
-
-3. **Segurança**
-   - Validação de dados de entrada
-   - Proteção contra CSRF
-   - Autenticação via tokens
-   - Headers de segurança
-   - Proteção contra rate limiting
-   - Transações em banco de dados para consistência
-
-4. **Padrões e Boas Práticas**
-   - SOLID
-   - Design Patterns (Repository, Service Layer)
-   - Testes automatizados
-   - Documentação da API
-   - Observabilidade via logs
-
-## Testes
-
-Para executar os testes:
+### 3. Configuração do Frontend (Local)
 
 ```bash
-docker exec carteira-app php artisan test
+cd grupoac-frontend
+npm install
 ```
 
-## Documentação da API
+Crie o arquivo `.env.local` com a URL da API:
 
-A documentação completa da API está disponível em formato Markdown no arquivo [API_DOCUMENTATION.md](API_DOCUMENTATION.md).
+```
+REACT_APP_API_URL=http://localhost:8000/api
+```
 
-## Diferenciais Implementados
+Inicie o servidor de desenvolvimento:
 
-- [x] Uso de Docker
-- [x] Testes de integração
-- [x] Testes unitários
-- [x] Documentação
-- [x] Observabilidade (logs estruturados)
+```bash
+npm start
+```
 
 ## Acessando a Aplicação
 
 - Backend API: http://localhost:8000/api
+- Frontend: http://localhost:3000
 
-## Próximos Passos
+## Funcionalidades
 
-1. Desenvolvimento do Frontend em React
-2. Implementação de filas para processamento assíncrono de transações
-3. Adição de relatórios financeiros
-4. Implementação de notificações em tempo real
+1. **Autenticação**
+   - Cadastro de usuários
+   - Login/Logout
+   - Proteção de rotas
 
----
+2. **Carteira Financeira**
+   - Criação de carteira para novos usuários
+   - Visualização de saldo
+   - Depósito de valores
+   - Transferências entre carteiras
+   - Estorno de transações
+   - Histórico detalhado de movimentações
+
+3. **Dashboard**
+   - Resumo de saldo e transações
+   - Gráficos de movimentações financeiras
+   - Últimas transações realizadas
+
+## Requisitos do Desafio Implementados
+
+- [x] Criar cadastro
+- [x] Criar autenticação
+- [x] Enviar, receber e depositar dinheiro
+- [x] Validar saldo antes da transferência
+- [x] Suporte para reversão de operações
+
+## Diferenciais Implementados
+
+- [x] Docker para o backend
+- [x] Testes de integração
+- [x] Testes unitários
+- [x] Documentação completa
+- [x] Observabilidade via logs estruturados
+
+## Estrutura de Pastas do Projeto
+
+```
+carteira-financeira/
+├── grupoAC-api/           # API Laravel
+│   ├── app/
+│   │   ├── Http/          # Controllers, Middleware, Requests
+│   │   ├── Models/        # Modelos de dados
+│   │   └── Services/      # Camada de serviços
+│   ├── docker/            # Configurações Docker
+│   ├── routes/            # Rotas da API
+│   └── tests/             # Testes unitários e de integração
+│
+└── grupoac-frontend/      # Aplicação React
+    ├── public/            # Arquivos públicos
+    └── src/               # Código fonte
+        ├── components/    # Componentes React
+        ├── contexts/      # Contextos para estado
+        ├── hooks/         # Hooks personalizados
+        ├── pages/         # Páginas da aplicação
+        └── services/      # Serviços para API
+```
+
+## Documentação Adicional
+
+- [API Documentation](grupoAC-api/API_DOCUMENTATION.md) - Documentação completa da API
+- [Frontend README](grupoac-frontend/README.md) - Documentação específica do frontend
+
+## Testes
+
+### Backend
+```bash
+docker exec carteira-app php artisan test
+```
+
+### Frontend
+```bash
+cd grupoac-frontend
+npm test
+```
 
 ## Contato
 
-Para mais informações ou suporte, entre em contato pelo email: seu.email@exemplo.com
+Para mais informações ou suporte, entre em contato pelo email: eduardomartttins@gmail.com
